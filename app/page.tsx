@@ -13,8 +13,8 @@ export default function Home() {
                 commodi explicabo!InCapable
             </p>
             <ToggleTheme />
-            <RegisterForm />
-            <LoginForm />
+            {/* <RegisterForm /> */}
+            {/* <LoginForm /> */}
         </main>
     );
 }

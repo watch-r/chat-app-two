@@ -2,6 +2,7 @@
 import { registerSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,7 +61,12 @@ const RegisterForm = () => {
         }
     });
     return (
-        <div className='max-w-xl'>
+        <div className='mb-3 w-auto xl:w-1/3 md:w-9/12'>
+            <div className='my-4 flex flex-col items-center'>
+                <h1 className='text-3xl font-semibold justify-center'>
+                    Register
+                </h1>
+            </div>
             {error && (
                 <Alert className='mb-2 mt-2' variant={"destructive"}>
                     <AlertCircle className='h-4 w-4' />
@@ -73,6 +79,7 @@ const RegisterForm = () => {
                     <div className='flex flex-col space-y-1 5'>
                         <Label htmlFor='name'>Name</Label>
                         <Input
+                            className='rounded-full'
                             id='name'
                             type='text'
                             placeholder='Name'
@@ -83,6 +90,7 @@ const RegisterForm = () => {
                     <div className='flex flex-col space-y-1 5'>
                         <Label htmlFor='email'>Email</Label>
                         <Input
+                            className='rounded-full'
                             id='email'
                             type='email'
                             placeholder='Email'
@@ -93,6 +101,7 @@ const RegisterForm = () => {
                     <div className='flex flex-col space-y-1 5'>
                         <Label htmlFor='password'>Password</Label>
                         <Input
+                            className='rounded-full'
                             id='password'
                             type='password'
                             placeholder='Password'
@@ -100,9 +109,25 @@ const RegisterForm = () => {
                         />
                         <ErrorMessage>{errors.password?.message}</ErrorMessage>
                     </div>
-                    <Button disabled={isSubmitting} type='submit'>
+                    <Button
+                        className='w-full rounded-full'
+                        disabled={isSubmitting}
+                        type='submit'
+                    >
                         Register {isSubmitting && <Spinner />}
                     </Button>
+
+                    <div className='flex flex-col items-center'>
+                        <p className='text-xs pt-3 text-slate-500'>
+                            Already have an Account?{" "}
+                            <Link
+                                className='hover:text-gray-50 text-gray-300'
+                                href={"/signin"}
+                            >
+                                Sign In.
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </form>
         </div>
