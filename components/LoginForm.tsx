@@ -1,7 +1,8 @@
 "use client";
-import { registerSchema } from "@/lib/schemas";
+import { logInSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,51 +15,42 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 
-type registerFormData = z.infer<typeof registerSchema>;
-
-const RegisterForm = () => {
+type logInFormData = z.infer<typeof logInSchema>;
+const LoginForm = () => {
     const router = useRouter();
     const { toast } = useToast();
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<registerFormData>({
-        resolver: zodResolver(registerSchema),
+    } = useForm<logInFormData>({
+        resolver: zodResolver(logInSchema),
     });
     const [isSubmitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+
     const submitForm = handleSubmit(async (data) => {
         try {
-            setSubmitting(true);
-            const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+            const response = await signIn("credentials", {
+                ...data,
+                redirect: false,
             });
-            if (response.ok) {
+
+            if (response!.ok) {
                 toast({
                     title: "Successful!",
-                    description:
-                        "Congratulations! Your Registration was Sucessfull",
+                    description: "Congratulations! Sign In was Sucessfull.",
                 });
                 router.refresh();
                 setTimeout(() => {
-                    router.push("/");
-                }, 2000);
-            } else {
-                setSubmitting(false);
-                toast({
-                    variant: "destructive",
-                    title: "Unsuccessful!",
-                    description: "An Unexpected Error Occured!",
-                });
+                    router.push("/chats");
+                }, 1500);
             }
         } catch (error) {
-            setSubmitting(false);
-            setError("An Unexpected Error Occured!");
+            setError("An Expected Error Occured.");
         }
     });
+
     return (
         <div className='max-w-xl'>
             {error && (
@@ -70,16 +62,6 @@ const RegisterForm = () => {
             )}
             <form onSubmit={submitForm}>
                 <div className='griditems-center gap-4'>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='name'>Name</Label>
-                        <Input
-                            id='name'
-                            type='text'
-                            placeholder='Name'
-                            {...register("name")}
-                        />
-                        <ErrorMessage>{errors.name?.message}</ErrorMessage>
-                    </div>
                     <div className='flex flex-col space-y-1 5'>
                         <Label htmlFor='email'>Email</Label>
                         <Input
@@ -109,4 +91,4 @@ const RegisterForm = () => {
     );
 };
 
-export default RegisterForm;
+export default LoginForm;

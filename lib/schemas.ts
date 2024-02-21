@@ -5,3 +5,9 @@ export const registerSchema = z.object({
     email: z.string().email("Please Provide a Valid Email"),
     password: z.string().min(5, "Password Minimum 5 Character(s) long"),
 });
+
+
+export const logInSchema = z.object({
+    email: z.string().email("Please Provide a Valid Email"),
+    password: z.string().min(5, "Password Minimum 5 Character(s) long"),
+});
