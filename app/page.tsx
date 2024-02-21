@@ -1,5 +1,7 @@
+import RegisterForm from "@/components/RegisterForm";
 import { ToggleTheme } from "@/components/ToggleTheme";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function Home() {
     return (
@@ -11,6 +13,7 @@ export default function Home() {
                 commodi explicabo!InCapable
             </p>
             <ToggleTheme />
+            <RegisterForm />
         </main>
     );
 }
