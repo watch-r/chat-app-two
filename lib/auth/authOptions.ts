@@ -46,6 +46,10 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
         }),
     ],
-
-    pages: { signIn: "/signin", newUser: "/signup" },
+    callbacks: {
+        redirect() {
+            return "/chats";
+        },
+    },
+    pages: { signIn: "/signin" },
 };

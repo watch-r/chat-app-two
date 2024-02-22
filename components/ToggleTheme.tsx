@@ -9,11 +9,12 @@ export function ToggleTheme() {
 
     return (
         <Button
-            className="h-8 w-8 "
+            variant={"outline"}
+            className='h-6 w-6 '
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
-            <Sun className="h-4 w-4 absolute rotate-0 scale-100 transition-all dark:scale-0 dark:-rotate-90" />
-            <Moon className="h-4 w-4 absolute rotate-90 scale-0 transition-all dark:scale-100 dark:rotate-0" />
+            <Sun className='h-4 w-4 absolute rotate-0 scale-100 transition-all dark:scale-0 dark:-rotate-90' />
+            <Moon className='h-4 w-4 absolute rotate-90 scale-0 transition-all dark:scale-100 dark:rotate-0' />
         </Button>
     );
 }

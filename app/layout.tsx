@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import NavBar from "@/components/NavBar";
+import AuthProvider from "@/lib/auth/Provider";
 
 const fontSans = FontSans({
     subsets: ["latin"],
@@ -28,15 +29,19 @@ export default function RootLayout({
                     fontSans.variable
                 )}
             >
-                <ThemeProvider
-                    attribute='class'
-                    defaultTheme='system'
-                    enableSystem
-                >
-                    <NavBar />
-                    <main>{children}</main>
-                    <Toaster />
-                </ThemeProvider>
+                <AuthProvider>
+                    <ThemeProvider
+                        attribute='class'
+                        defaultTheme='system'
+                        enableSystem
+                    >
+                        <main className='container mx-auto'>
+                            <NavBar />
+                            {children}
+                        </main>
+                        <Toaster />
+                    </ThemeProvider>
+                </AuthProvider>
             </body>
         </html>
     );

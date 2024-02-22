@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Logo from "./Logo";
 import Link from "next/link";
@@ -10,14 +11,21 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { useSession } from "next-auth/react";
+import { Skeleton } from "./ui/skeleton";
+import { LogInIcon, LogOut, User } from "lucide-react";
+import { ToggleTheme } from "./ToggleTheme";
 
 const NavBar = () => {
+    const pathname = usePathname();
     return (
-        <nav className='border-b-2 px-5 mb-5 py-3'>
+        <nav className='border-b-2 px-4 mb-5 py-3'>
             <div className='flex flex-row items-center justify-between'>
                 <Link
                     href={"/"}
-                    className='flex flex-row space-x-2 items-center'
+                    className='flex flex-row space-x-1 items-center'
                 >
                     <Image
                         src={"/chatlogo.svg"}
@@ -25,10 +33,13 @@ const NavBar = () => {
                         height={"50"}
                         width={30}
                     />{" "}
-                    <p className='text-lg font-extrabold'>Chat App</p>
+                    <p className='text-sm md:text-base font-extrabold'>
+                        Chat App
+                    </p>
                 </Link>
                 <div className='flex space-x-2 items-center'>
                     <NavLinks />
+                    <ToggleTheme />
                     <AuthStatus />
                 </div>
             </div>
@@ -45,7 +56,10 @@ const NavLinks = () => {
         <ul className='flex space-x-2'>
             {links.map((link) => (
                 <li key={link.href}>
-                    <Link href={link.href} className='font-bold'>
+                    <Link
+                        href={link.href}
+                        className='font-semibold text-sm md:font-bold md:text-lg'
+                    >
                         {link.label}
                     </Link>
                 </li>
@@ -55,16 +69,53 @@ const NavLinks = () => {
 };
 
 const AuthStatus = () => {
+    const { status, data: session } = useSession();
+
+    if (status === "loading") return <Skeleton className='w-6 h-6' />;
+    if (status === "unauthenticated")
+        return (
+            <Link className='nav-link' href='/signin'>
+                <LogInIcon />
+            </Link>
+        );
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>Open</DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuTrigger>
+                <Avatar className='w-8 h-8'>
+                    <AvatarImage
+                        src={session!.user!.image!}
+                        referrerPolicy='no-referrer'
+                    />
+                    <AvatarFallback>?</AvatarFallback>
+                </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56'>
+                <DropdownMenuLabel>
+                    {session?.user!.name!}{" "}
+                    <span className='text-gray-600 dark:text-gray-300 font-light'>
+                        {session?.user!.email!}
+                    </span>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Team</DropdownMenuItem>
-                <DropdownMenuItem>Subscription</DropdownMenuItem>
+                <DropdownMenuItem>
+                    <a
+                        href={"/profile"}
+                        className='flex flex-row items-center justify-center'
+                    >
+                        <User className='mr-2 h-4 w-4' />
+                        <span>Profile</span>
+                    </a>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                    <Link
+                        href={"/api/auth/signout"}
+                        className='flex flex-row items-center justify-center'
+                    >
+                        <LogOut className='mr-2 h-4 w-4' />
+                        <span>Log out</span>
+                    </Link>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
