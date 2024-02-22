@@ -15,6 +15,17 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 import Link from "next/link";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "./ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import SignInGoogle from "./SignInGoogle";
+import Logo from "./Logo";
 
 type logInFormData = z.infer<typeof logInSchema>;
 const LoginForm = () => {
@@ -55,65 +66,71 @@ const LoginForm = () => {
     });
 
     return (
-        <div className='mb-3 w-auto xl:w-1/3 md:w-9/12'>
-            <div className='my-4 flex flex-col items-center'>
-                <h1 className='text-3xl font-semibold justify-center'>
-                    Sign In
-                </h1>
-            </div>
-            {error && (
-                <Alert className='mb-2 mt-2' variant={"destructive"}>
-                    <AlertCircle className='h-4 w-4' />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-            <form onSubmit={submitForm}>
-                <div className='griditems-center gap-4'>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='email'>Email</Label>
-                        <Input
-                            className='rounded-full'
-                            id='email'
-                            type='email'
-                            placeholder='Email'
-                            {...register("email")}
-                        />
-                        <ErrorMessage>{errors.email?.message}</ErrorMessage>
+        <Card className='sm:w-[350px] md:w-[400px]'>
+            <CardHeader className='my-2 flex flex-col items-center'>
+                <CardTitle className='text-3xl font-semibold '>
+                    <div className='flex flex-col items-center justify-center'>
+                        <Logo />
+                        Sign In
                     </div>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='password'>Password</Label>
-                        <Input
-                            className='rounded-full'
-                            id='password'
-                            type='password'
-                            placeholder='Password'
-                            {...register("password")}
-                        />
-                        <ErrorMessage>{errors.password?.message}</ErrorMessage>
-                    </div>
-                    <Button
-                        className='w-full rounded-full'
-                        disabled={isSubmitting}
-                        type='submit'
-                    >
-                        Sign In {isSubmitting && <Spinner />}
-                    </Button>
-                </div>
-            </form>
-            <div className='flex flex-col items-center'>
-                <p className='text-xs pt-3 text-slate-500'>
-                    New here?{" "}
+                </CardTitle>
+                <CardDescription>
+                    New here? First{" "}
                     <Link
-                        className='hover:text-gray-50 text-gray-300'
+                        className='hover:text-gray-700 hover:underline text-gray-600 dark:hover:text-gray-50 dark:text-gray-300'
                         href={"/signup"}
                     >
                         Sign up.
                     </Link>{" "}
-                    First
-                </p>
-            </div>
-        </div>
+                    {error && (
+                        <Alert className='h-16 mt-2' variant={"destructive"}>
+                            <AlertCircle className='h-4 w-4' />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className='pb-1'>
+                <form onSubmit={submitForm}>
+                    <div className='griditems-center gap-4'>
+                        <div className='flex flex-col space-y-1 5'>
+                            <Label htmlFor='email'>Email</Label>
+                            <Input
+                                className='rounded-full'
+                                id='email'
+                                type='email'
+                                placeholder='Email'
+                                {...register("email")}
+                            />
+                            <ErrorMessage>{errors.email?.message}</ErrorMessage>
+                        </div>
+                        <div className='flex flex-col space-y-1 5'>
+                            <Label htmlFor='password'>Password</Label>
+                            <Input
+                                className='rounded-full'
+                                id='password'
+                                type='password'
+                                placeholder='Password'
+                                {...register("password")}
+                            />
+                            <ErrorMessage>
+                                {errors.password?.message}
+                            </ErrorMessage>
+                        </div>
+                    </div>
+                    <Button
+                        className='w-full rounded-full'
+                        disabled={isSubmitting}
+                    >
+                        Sign In {isSubmitting && <Spinner />}
+                    </Button>
+                </form>
+            </CardContent>
+            <CardFooter className='flex flex-col items-center'>
+                <SignInGoogle />
+            </CardFooter>
+        </Card>
     );
 };
 

@@ -8,14 +8,35 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ErrorMessage from "./ErrorMessage";
+import Logo from "./Logo";
 import Spinner from "./Spinner";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 
+import React from "react";
+import SignInGoogle from "./SignInGoogle";
+
 type registerFormData = z.infer<typeof registerSchema>;
+type FieldName = "name" | "email" | "password" | "confirmPassword";
+type FormContentType = {
+    id: number;
+    label: string;
+    htmlfor: string;
+    registername: FieldName;
+    type: string;
+    placeholder: string;
+};
 
 const RegisterForm = () => {
     const router = useRouter();
@@ -29,6 +50,40 @@ const RegisterForm = () => {
     });
     const [isSubmitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const formContent: FormContentType[] = [
+        {
+            id: 1,
+            label: "Name",
+            htmlfor: "name",
+            registername: "name",
+            type: "text",
+            placeholder: "Your Full Name",
+        },
+        {
+            id: 2,
+            label: "Email",
+            htmlfor: "email",
+            registername: "email",
+            type: "email",
+            placeholder: "example@email.com",
+        },
+        {
+            id: 3,
+            label: "Password",
+            htmlfor: "password",
+            registername: "password",
+            type: "password",
+            placeholder: "password",
+        },
+        {
+            id: 4,
+            label: "Confirm Password",
+            htmlfor: "password",
+            registername: "confirmPassword",
+            type: "password",
+            placeholder: "Re-enter your Password",
+        },
+    ];
     const submitForm = handleSubmit(async (data) => {
         try {
             setSubmitting(true);
@@ -41,11 +96,11 @@ const RegisterForm = () => {
                 toast({
                     title: "Successful!",
                     description:
-                        "Congratulations! Your Registration was Sucessfull",
+                        "Congratulations! Your Registration was Successful. Please Sign In Now.",
                 });
                 router.refresh();
                 setTimeout(() => {
-                    router.push("/");
+                    router.push("/signin");
                 }, 2000);
             } else {
                 setSubmitting(false);
@@ -61,53 +116,53 @@ const RegisterForm = () => {
         }
     });
     return (
-        <div className='mb-3 w-auto xl:w-1/3 md:w-9/12'>
-            <div className='my-4 flex flex-col items-center'>
-                <h1 className='text-3xl font-semibold justify-center'>
-                    Register
-                </h1>
-            </div>
-            {error && (
-                <Alert className='mb-2 mt-2' variant={"destructive"}>
-                    <AlertCircle className='h-4 w-4' />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-            <form onSubmit={submitForm}>
-                <div className='griditems-center gap-4'>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='name'>Name</Label>
-                        <Input
-                            className='rounded-full'
-                            id='name'
-                            type='text'
-                            placeholder='Name'
-                            {...register("name")}
-                        />
-                        <ErrorMessage>{errors.name?.message}</ErrorMessage>
+        <Card className='sm:w-[350px] md:w-[400px]'>
+            <CardHeader className='my-4 flex flex-col items-center'>
+                <CardTitle className='text-3xl font-semibold '>
+                    <div className='flex flex-col items-center justify-center'>
+                        <Logo />
+                        Sign Up
                     </div>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='email'>Email</Label>
-                        <Input
-                            className='rounded-full'
-                            id='email'
-                            type='email'
-                            placeholder='Email'
-                            {...register("email")}
-                        />
-                        <ErrorMessage>{errors.email?.message}</ErrorMessage>
-                    </div>
-                    <div className='flex flex-col space-y-1 5'>
-                        <Label htmlFor='password'>Password</Label>
-                        <Input
-                            className='rounded-full'
-                            id='password'
-                            type='password'
-                            placeholder='Password'
-                            {...register("password")}
-                        />
-                        <ErrorMessage>{errors.password?.message}</ErrorMessage>
+                </CardTitle>
+                <CardDescription>
+                    Already have an Account?{" "}
+                    <Link
+                        className='hover:text-gray-700 hover:underline text-gray-600 dark:hover:text-gray-50 dark:text-gray-300'
+                        href={"/signin"}
+                    >
+                        Sign In.
+                    </Link>
+                    {error && (
+                        <Alert className='mb-2 mt-2' variant={"destructive"}>
+                            <AlertCircle className='h-4 w-4' />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className='pb-1'>
+                <form onSubmit={submitForm}>
+                    <div className='griditems-center gap-4'>
+                        <div className='flex flex-col space-y-1 5'>
+                            {formContent.map((field) => (
+                                <React.Fragment key={field.id}>
+                                    <Label htmlFor={field.htmlfor}>
+                                        {field.label}
+                                    </Label>
+                                    <Input
+                                        className='rounded-full'
+                                        id={field.htmlfor}
+                                        type={field.type}
+                                        placeholder={field.placeholder}
+                                        {...register(field.registername)}
+                                    />
+                                    <ErrorMessage>
+                                        {errors[field.registername]?.message}
+                                    </ErrorMessage>
+                                </React.Fragment>
+                            ))}
+                        </div>
                     </div>
                     <Button
                         className='w-full rounded-full'
@@ -116,21 +171,12 @@ const RegisterForm = () => {
                     >
                         Register {isSubmitting && <Spinner />}
                     </Button>
-
-                    <div className='flex flex-col items-center'>
-                        <p className='text-xs pt-3 text-slate-500'>
-                            Already have an Account?{" "}
-                            <Link
-                                className='hover:text-gray-50 text-gray-300'
-                                href={"/signin"}
-                            >
-                                Sign In.
-                            </Link>
-                        </p>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </CardContent>
+            <CardFooter className='flex flex-col items-center'>
+                <SignInGoogle />
+            </CardFooter>
+        </Card>
     );
 };
 
