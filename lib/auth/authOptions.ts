@@ -46,10 +46,5 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
         }),
     ],
-    // callbacks: {
-    //     redirect() {
-    //         return "/chats";
-    //     },
-    // },
     pages: { signIn: "/" },
 };

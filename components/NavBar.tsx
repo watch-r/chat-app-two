@@ -16,6 +16,7 @@ import { ToggleTheme } from "./ToggleTheme";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const NavBar = () => {
     const pathname = usePathname();
@@ -47,6 +48,7 @@ const NavBar = () => {
 };
 
 const NavLinks = () => {
+    const currentPath = usePathname();
     const links = [
         { label: "Chats", href: "/chats" },
         { label: "Contacts", href: "/contacts" },
@@ -57,7 +59,13 @@ const NavLinks = () => {
                 <li key={link.href}>
                     <Link
                         href={link.href}
-                        className='font-semibold text-sm md:font-bold md:text-lg'
+                        className={cn(
+                            "font-semibold text-sm md:font-bold md:text-lg",
+                            {
+                                "dark:!text-violet-800 text-violet-400":
+                                    link.href === currentPath,
+                            }
+                        )}
                     >
                         {link.label}
                     </Link>
@@ -82,7 +90,11 @@ const AuthStatus = () => {
             <DropdownMenuTrigger>
                 <Avatar className='w-8 h-8'>
                     <AvatarImage
-                        src={session!.user!.image!}
+                        src={
+                            session!.user!.image
+                                ? session!.user!.image
+                                : "/defaultperson.png"
+                        }
                         referrerPolicy='no-referrer'
                     />
                     <AvatarFallback>?</AvatarFallback>

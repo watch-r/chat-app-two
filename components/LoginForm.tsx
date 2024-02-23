@@ -3,18 +3,17 @@ import { logInSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle } from "lucide-react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ErrorMessage from "./ErrorMessage";
+import Logo from "./Logo";
+import SignInGoogle from "./SignInGoogle";
 import Spinner from "./Spinner";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { useToast } from "./ui/use-toast";
-import Link from "next/link";
 import {
     Card,
     CardContent,
@@ -23,9 +22,9 @@ import {
     CardHeader,
     CardTitle,
 } from "./ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import SignInGoogle from "./SignInGoogle";
-import Logo from "./Logo";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { useToast } from "./ui/use-toast";
 
 type logInFormData = z.infer<typeof logInSchema>;
 const LoginForm = () => {
@@ -52,12 +51,19 @@ const LoginForm = () => {
             if (response!.ok) {
                 toast({
                     title: "Successful!",
-                    description: "Congratulations! Sign In was Sucessfull.",
+                    description: "Congratulations! Sign In was Successful.",
                 });
                 router.refresh();
                 setTimeout(() => {
                     router.push("/chats");
                 }, 1500);
+            } else {
+                setSubmitting(false);
+                toast({
+                    variant: "destructive",
+                    title: "Unsuccessful!",
+                    description: "Invalid Username or Password!",
+                });
             }
         } catch (error) {
             setSubmitting(false);
