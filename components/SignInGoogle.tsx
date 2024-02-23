@@ -5,14 +5,16 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Spinner from "./Spinner";
 import { useToast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const SignInGoogle = () => {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { toast } = useToast();
     async function loginWithGoogle() {
         setIsLoading(true);
         try {
-            await signIn("google");
+            await signIn("google", { callbackUrl: "/chats" });
         } catch (error) {
             // display error message to user
             toast({

@@ -100,7 +100,7 @@ const RegisterForm = () => {
                 });
                 router.refresh();
                 setTimeout(() => {
-                    router.push("/signin");
+                    router.push("/");
                 }, 2000);
             } else {
                 setSubmitting(false);
@@ -128,7 +128,7 @@ const RegisterForm = () => {
                     Already have an Account?{" "}
                     <Link
                         className='hover:text-gray-700 hover:underline text-gray-600 dark:hover:text-gray-50 dark:text-gray-300'
-                        href={"/signin"}
+                        href={"/"}
                     >
                         Sign In.
                     </Link>

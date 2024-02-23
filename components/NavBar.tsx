@@ -1,7 +1,4 @@
 "use client";
-import React from "react";
-import Logo from "./Logo";
-import Link from "next/link";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,13 +7,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
-import { useSession } from "next-auth/react";
-import { Skeleton } from "./ui/skeleton";
 import { LogInIcon, LogOut, User } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ToggleTheme } from "./ToggleTheme";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 const NavBar = () => {
     const pathname = usePathname();
@@ -24,7 +23,7 @@ const NavBar = () => {
         <nav className='border-b-2 px-4 mb-5 py-3'>
             <div className='flex flex-row items-center justify-between'>
                 <Link
-                    href={"/"}
+                    href={"/chats"}
                     className='flex flex-row space-x-1 items-center'
                 >
                     <Image
@@ -98,23 +97,24 @@ const AuthStatus = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <a
+                    <Link
                         href={"/profile"}
                         className='flex flex-row items-center justify-center'
                     >
                         <User className='mr-2 h-4 w-4' />
                         <span>Profile</span>
-                    </a>
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <Link
-                        href={"/api/auth/signout"}
-                        className='flex flex-row items-center justify-center'
+                    <Button
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        variant={"link"}
+                        className='flex flex-row items-center justify-center h-6'
                     >
                         <LogOut className='mr-2 h-4 w-4' />
                         <span>Log out</span>
-                    </Link>
+                    </Button>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

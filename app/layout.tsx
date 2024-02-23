@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Cham as FontSans } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -35,10 +35,7 @@ export default function RootLayout({
                         defaultTheme='system'
                         enableSystem
                     >
-                        <main className='container mx-auto'>
-                            <NavBar />
-                            {children}
-                        </main>
+                        <main>{children}</main>
                         <Toaster />
                     </ThemeProvider>
                 </AuthProvider>

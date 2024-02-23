@@ -1,12 +1,12 @@
-import RegisterForm from "@/components/RegisterForm";
+import LoginForm from "@/components/LoginForm";
 import { authOptions } from "@/lib/auth/authOptions";
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-const SignUpPage = async () => {
+const SignInpage = async () => {
     const session = await getServerSession(authOptions);
     if (session) return redirect("/chats");
-    return <RegisterForm />;
+    return <LoginForm />;
 };
 
-export default SignUpPage;
+export default SignInpage;
