@@ -8,7 +8,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogInIcon, LogOut, User } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,7 +19,6 @@ import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const NavBar = () => {
-    const pathname = usePathname();
     return (
         <nav className='border-b-2 px-4 mb-5 py-3'>
             <div className='flex flex-row items-center justify-between'>
@@ -30,9 +29,9 @@ const NavBar = () => {
                     <Image
                         src={"/chatlogo.svg"}
                         alt='Chat logo'
-                        height={"50"}
+                        height={30}
                         width={30}
-                    />{" "}
+                    />
                     <p className='text-sm md:text-base font-extrabold'>
                         Chat App
                     </p>
@@ -76,9 +75,10 @@ const NavLinks = () => {
 };
 
 const AuthStatus = () => {
+    // location.reload();
     const { status, data: session } = useSession();
 
-    if (status === "loading") return <Skeleton className='w-6 h-6' />;
+    if (status === "loading") return <Skeleton className='w-8 h-8' />;
     if (status === "unauthenticated")
         return (
             <Link className='nav-link' href='/signin'>
@@ -90,12 +90,7 @@ const AuthStatus = () => {
             <DropdownMenuTrigger>
                 <Avatar className='w-8 h-8'>
                     <AvatarImage
-                        src={
-                            session!.user!.image
-                                ? session!.user!.image
-                                : "/defaultperson.png"
-                        }
-                        referrerPolicy='no-referrer'
+                        src={session!.user!.image || "/defaultperson.png"}
                     />
                     <AvatarFallback>?</AvatarFallback>
                 </Avatar>
