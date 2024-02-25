@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Spinner from "./Spinner";
 import { useToast } from "./ui/use-toast";
 
 type user = {
@@ -51,7 +52,7 @@ const ProfileForm = ({ user }: Props) => {
     const { data: session } = useSession();
     const sessionUser = session?.user;
     const { toast } = useToast();
-    const [isloading, setLoading] = useState(true);
+    const [isloading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof profileFormSchema>>({
         resolver: zodResolver(profileFormSchema),
         defaultValues: {
@@ -84,7 +85,7 @@ const ProfileForm = ({ user }: Props) => {
                     variant: "default",
                     title: "Successful!",
                     description:
-                        "Profile Updated Successfully. The Profile Picture will be updated next tiem  you log in.",
+                        "Profile Updated Successfully.",
                 });
                 setLoading(false);
             }
@@ -145,7 +146,7 @@ const ProfileForm = ({ user }: Props) => {
                     </CldUploadWidget>
                 </div>
                 <Button disabled={isloading} type='submit'>
-                    Save Changes
+                    Save Changes {isloading && <Spinner />}
                 </Button>
             </form>
         </Form>

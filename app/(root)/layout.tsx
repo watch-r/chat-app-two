@@ -1,5 +1,5 @@
 import "@/app/globals.css";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/nav/NavBar";
 import AuthProvider from "@/lib/auth/Provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
