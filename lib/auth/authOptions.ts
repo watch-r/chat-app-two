@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
                     credentials.password,
                     user.hashedPassword!
                 );
+                
                 return validPass ? user : null;
             },
         }),
@@ -46,5 +47,6 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
         }),
     ],
+
     pages: { signIn: "/" },
 };

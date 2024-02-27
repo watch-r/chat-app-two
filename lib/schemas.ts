@@ -26,3 +26,9 @@ export const patchProfileSchema = z.object({
         .optional(),
     image: z.string().optional(),
 });
+
+export const addFriendForm = z.object({
+    email: z.string().email({
+        message: "Please Provide a Valid Email",
+    }),
+});

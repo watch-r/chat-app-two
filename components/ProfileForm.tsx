@@ -49,8 +49,6 @@ interface Props {
 
 const ProfileForm = ({ user }: Props) => {
     const router = useRouter();
-    const { data: session } = useSession();
-    const sessionUser = session?.user;
     const { toast } = useToast();
     const [isloading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof profileFormSchema>>({

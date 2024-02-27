@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import React from "react";
+import ChatList from "./_components/ChatList";
 
 export const metadata: Metadata = {
     title: "Chats: Chat App",
@@ -7,7 +8,16 @@ export const metadata: Metadata = {
 };
 
 const ChatsPage = () => {
-    return <div>ChatsPage</div>;
+    return (
+        <div className='flex flex-row'>
+            <div className='w-1/3 max-lg:w-1/2 max-md:w-full'>
+                <ChatList />
+            </div>
+            <div className='w-2/3 max-lg:w-1/2 max-md:hidden'>
+                {/* <Contacts /> */}hello 2
+            </div>
+        </div>
+    );
 };
 
 export default ChatsPage;

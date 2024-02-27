@@ -41,14 +41,17 @@ model Session {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  hashedPassword String?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
+  id               String          @id @default(cuid())
+  name             String?
+  email            String?         @unique
+  emailVerified    DateTime?
+  hashedPassword   String?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  sentRequests     FriendRequest[] @relation("sentRequests")
+  receivedRequests FriendRequest[] @relation("receivedRequests")
+  friends          Json?
 }
 
 model VerificationToken {
@@ -57,4 +60,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model FriendRequest {
+  reqid      String   @id @default(cuid())
+  fromUserId String
+  fromUser   User     @relation("sentRequests", fields: [fromUserId], references: [id])
+  toUserId   String
+  toUser     User     @relation("receivedRequests", fields: [toUserId], references: [id])
+  status     Status   @default(PENDING)
+  createdAt  DateTime @default(now())
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
 }
