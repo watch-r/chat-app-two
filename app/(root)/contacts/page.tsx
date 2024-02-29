@@ -1,10 +1,12 @@
-import React from 'react'
-import Contacts from './_components/Contacts'
+import Contacts from "./_components/Contacts";
+// import delay from "delay";
+const ContactsPage = async () => {
+    // await delay(3000);
+    return (
+        <div>
+            <Contacts />
+        </div>
+    );
+};
 
-const ContactsPage = () => {
-  return (
-    <div><Contacts/></div>
-  )
-}
-
-export default ContactsPage
+export default ContactsPage;

@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -40,20 +41,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id               String          @id @default(cuid())
-  name             String?
-  email            String?         @unique
-  emailVerified    DateTime?
-  hashedPassword   String?
-  image            String?
-  accounts         Account[]
-  sessions         Session[]
-  sentRequests     FriendRequest[] @relation("sentRequests")
-  receivedRequests FriendRequest[] @relation("receivedRequests")
-  friends          Json?
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -62,17 +49,38 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model FriendRequest {
-  reqid      String   @id @default(cuid())
-  fromUserId String
-  fromUser   User     @relation("sentRequests", fields: [fromUserId], references: [id])
-  toUserId   String
-  toUser     User     @relation("receivedRequests", fields: [toUserId], references: [id])
-  status     Status   @default(PENDING)
-  createdAt  DateTime @default(now())
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  Chat           Chat[]
+  Message        Message[]
 }
 
-enum Status {
-  PENDING
-  ACCEPTED
+model Chat {
+  id            String    @id @default(cuid())
+  name          String?
+  isGroup       Boolean   @default(false)
+  groupPhoto    String?
+  createdAt     DateTime  @default(now())
+  lastMessageAt DateTime  @default(now())
+  members       User[]
+  messages      Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  text      String?
+  photo     String?
+  createdAt DateTime @default(now())
+  seenBy    String[]
 }
