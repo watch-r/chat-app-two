@@ -58,29 +58,30 @@ model User {
   image          String?
   accounts       Account[]
   sessions       Session[]
-  Chat           Chat[]
-  Message        Message[]
+  chat           Chat[]
+  message        Message[] @relation("sentByUser")
+  messagex       Message[] @relation("seenByUsers")
 }
 
 model Chat {
   id            String    @id @default(cuid())
-  name          String?
+  gname          String?
   isGroup       Boolean   @default(false)
   groupPhoto    String?
+  members       User[]
   createdAt     DateTime  @default(now())
   lastMessageAt DateTime  @default(now())
-  members       User[]
   messages      Message[]
 }
 
 model Message {
   id        String   @id @default(cuid())
-  chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
+  sender    User     @relation("sentByUser", fields: [senderId], references: [id])
   senderId  String
-  sender    User     @relation(fields: [senderId], references: [id])
-  text      String?
-  photo     String?
+  text      String   @default("")
+  photo     String   @default("")
   createdAt DateTime @default(now())
-  seenBy    String[]
+  seenBy    User[]   @relation("seenByUsers") // Array of users who have seen the message
 }

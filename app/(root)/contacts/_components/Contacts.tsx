@@ -9,6 +9,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { fetcher } from "@/lib/utils";
 import ContactsSkeleton from "./ContactsSkeleton";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { getId } from "@/lib/getId";
+import { useRouter } from "next/navigation";
 
 type Contact = {
     id: string;
@@ -20,6 +24,7 @@ type Contact = {
 const Contacts = () => {
     const { data: session } = useSession();
     const currentUser = session?.user;
+    const router = useRouter();
 
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [search, setSearch] = useState("");
@@ -53,6 +58,31 @@ const Contacts = () => {
         );
     };
 
+    const [groupName, setGroupname] = useState("");
+    const isGroup = selectedContacts.length > 1;
+
+    const createChat = async () => {
+        const response = await fetch("http://localhost:3000/api/chats", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                currentUser: currentUser?.email,
+                members: selectedContacts.map((contact) => contact.id),
+                isGroup: isGroup,
+                gname: groupName,
+                groupPhoto: "",
+            }),
+            cache: "no-store",
+        });
+        const chat = await response.json();
+
+        if (response.ok) {
+            router.push(`/chats/${chat.id}`);
+        }
+    };
+
     return (
         <>
             <Input
@@ -65,16 +95,20 @@ const Contacts = () => {
                     {isLoading ? (
                         <ContactsSkeleton />
                     ) : (
-                        <RadioGroup>
+                        <div className='space-y-2'>
+                            <p className='font-semibold text-lg px-3 mt-2'>
+                                Select or Deselect to start...
+                            </p>
                             {contacts.map((user: Contact, index: number) => (
                                 <div
                                     className='flex items-center space-x-2 space-y-1 p-3 border-2 border-purple-100 dark:border-purple-950 rounded-lg'
                                     key={index}
                                     onClick={() => handleSelect(user)}
                                 >
-                                    <RadioGroupItem
+                                    <Checkbox
                                         value={user.id}
                                         id={user.id}
+                                        className='w-5 h-5'
                                     />
                                     <Image
                                         className='rounded-full'
@@ -93,11 +127,47 @@ const Contacts = () => {
                                     </Label>
                                 </div>
                             ))}
-                        </RadioGroup>
+                        </div>
                     )}
                 </div>
-                <div className='w-1/2 max-lg:w-full flex flex-col gap-7'>
-                    <Button>Start A New Chat</Button>
+                <div className='pl-2 w-1/2 max-lg:w-full flex flex-col gap-7'>
+                    {isGroup && (
+                        <>
+                            <div className='flex flex-col gap-3'>
+                                <p className='text-xl font-semibold tracking-tight'>
+                                    Group Chat Name
+                                </p>
+                                <Input
+                                    placeholder='Enter Group Chat Name...'
+                                    value={groupName}
+                                    onChange={(event) =>
+                                        setGroupname(event.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className='flex flex-col gap-3'>
+                                <p className='text-xl font-semibold tracking-tight'>
+                                    Members
+                                </p>
+                                <div className='flex flex-wrap gap-3'>
+                                    {selectedContacts.map((contact, index) => (
+                                        <Badge
+                                            key={index}
+                                            variant={"secondary"}
+                                        >
+                                            {contact.name}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    <Button
+                        onClick={createChat}
+                        disabled={selectedContacts.length < 1}
+                    >
+                        Start A New Chat
+                    </Button>
                 </div>
             </div>
         </>
