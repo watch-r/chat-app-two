@@ -1,18 +1,16 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import useSWR from "swr";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { fetcher } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { fetcher } from "@/lib/utils";
-import ContactsSkeleton from "./ContactsSkeleton";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { getId } from "@/lib/getId";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import ContactsSkeleton from "./ContactsSkeleton";
 
 type Contact = {
     id: string;
@@ -103,9 +101,9 @@ const Contacts = () => {
                                 <div
                                     className='flex items-center space-x-2 space-y-1 p-3 border-2 border-purple-100 dark:border-purple-950 rounded-lg'
                                     key={index}
-                                    onClick={() => handleSelect(user)}
                                 >
                                     <Checkbox
+                                        onClick={() => handleSelect(user)}
                                         value={user.id}
                                         id={user.id}
                                         className='w-5 h-5'

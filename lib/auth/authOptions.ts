@@ -7,9 +7,6 @@ import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
-    session: {
-        strategy: "jwt",
-    },
     providers: [
         CredentialsProvider({
             // The name to display on the sign in form (e.g. "Sign in with...")
@@ -38,7 +35,7 @@ export const authOptions: NextAuthOptions = {
                     credentials.password,
                     user.hashedPassword!
                 );
-                
+
                 return validPass ? user : null;
             },
         }),
@@ -47,6 +44,26 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
         }),
     ],
+    callbacks: {
+        jwt: async ({ token }) => {
+            const user = await prisma.user.findUnique({
+                where: { email: token.email || undefined },
+            });
+            if (user?.id) {
+                token.id = user.id;
+            }
+            return token;
+        },
+        session: async ({ session, token }) => {
+            if (token?.id) {
+                session.user.id = token?.id as string;
+            }
+            return session;
+        },
+    },
+    session: {
+        strategy: "jwt",
+    },
 
     pages: { signIn: "/" },
 };

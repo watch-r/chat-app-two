@@ -59,7 +59,7 @@ export const POST = async (request: NextRequest) => {
                       },
             });
         }
-        return NextResponse.json("Creating New Chats was Successful", {
+        return NextResponse.json(chat, {
             status: 201,
         });
     } catch (error) {
