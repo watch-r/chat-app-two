@@ -18,24 +18,21 @@ const AuthStatus = async () => {
     const session = await getServerSession(authOptions);
     if (!session) return notFound();
 
-    const userbyEmail = await prisma?.user.findUnique({
-        where: { email: session!.user!.email! },
-    });
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <Avatar className='w-8 h-8'>
                     <AvatarImage
-                        src={userbyEmail!.image || "/defaultperson.png"}
+                        src={session.user.image || "/defaultperson.png"}
                     />
                     <AvatarFallback>?</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
                 <DropdownMenuLabel>
-                    {userbyEmail!.name!}{" "}
+                    {session.user!.name!}{" "}
                     <span className='text-gray-600 dark:text-gray-300 font-light'>
-                        {userbyEmail!.email!}
+                        {session.user.email!}
                     </span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
