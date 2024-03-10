@@ -132,11 +132,10 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
                     onUpload={sendPhoto}
                     options={{
                         maxFiles: 1,
-                        cropping: true,
                         sources: ["local"],
                         resourceType: "image",
                     }}
-                    uploadPreset='ffsyomdz'
+                    uploadPreset='kxyf6lgq'
                 >
                     <ImagePlusIcon />
                 </CldUploadButton>
