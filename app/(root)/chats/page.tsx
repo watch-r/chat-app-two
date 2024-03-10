@@ -15,7 +15,7 @@ const ChatsPage = () => {
                 <ChatList /> 
             </div>
             <div className='w-2/3 max-lg:w-1/2 max-md:hidden'>
-                {/* <Contacts />  */} <p>Contacts should be shown here</p>
+                <Contacts />  
             </div>
         </div>
     );
