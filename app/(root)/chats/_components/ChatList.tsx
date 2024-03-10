@@ -28,7 +28,7 @@ const ChatListPage = ({ chatId }: PageProps) => {
                 search !== ""
                     ? `http//localhost:3000/api/users/${currentUser?.id}/searchChat/${search}`
                     : `http//localhost:3000/api/users/${currentUser?.id}`,
-                { cache: "no-store" }
+                { cache: "no-store", method: "GET" }
             );
             const data = await response.json();
             setChats(data);
