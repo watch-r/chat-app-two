@@ -26,8 +26,8 @@ const ChatListPage = ({ chatId }: PageProps) => {
         try {
             const response = await fetch(
                 search !== ""
-                    ? `http//localhost:3000/api/users/${currentUser?.id}/searchChat/${search}`
-                    : `http//localhost:3000/api/users/${currentUser?.id}`,
+                    ? `/api/users/${currentUser?.id}/searchChat/${search}`
+                    : `/api/users/${currentUser?.id}`,
                 { cache: "no-store", method: "GET" }
             );
             const data = await response.json();
