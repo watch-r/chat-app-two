@@ -25,7 +25,6 @@ const ChatCard = ({ chat, currentUser }: PageProps) => {
     const seen = lastMessage?.seenBy?.find(
         (member) => member.id === currentUser?.id
     );
-    console.log(seen);
     const handleclick = () => {
         router.push(`/chats/${chat.id}`);
     };

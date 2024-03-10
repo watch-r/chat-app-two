@@ -50,10 +50,7 @@ const ChatListPage = ({ chatId }: PageProps) => {
                                 : ""
                         }`}
                     >
-                        <ChatCard
-                            chat={chat}
-                            currentUser={currentUser}
-                        />
+                        <ChatCard chat={chat} currentUser={currentUser} />
                     </div>
                 ))
             )}

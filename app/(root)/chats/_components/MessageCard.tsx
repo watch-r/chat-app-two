@@ -11,7 +11,7 @@ const MessageCard = ({ message, currentUser }: pageProps) => {
     return message.senderId !== currentUser?.id ? (
         <div className='flex items-start gap-2'>
             <Image
-                className='rounded-full '
+                className='rounded-full'
                 priority
                 src={(message?.sender?.image as string) || "/defaultperson.png"}
                 alt={`Photo of ${message?.sender?.name}`}

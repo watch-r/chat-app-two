@@ -1,18 +1,17 @@
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
-import { fetcher } from "@/lib/utils";
-import { Chat, User } from "@/types/allTypes";
+import { pusherClient } from "@/lib/pusher";
+import { Chat, Message, User } from "@/types/allTypes";
 import { ImagePlusIcon, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useEffect, useRef, useState } from "react";
 import MessageCard from "./MessageCard";
 
 interface myPageProps {
-    chatId: string | string[];
+    chatId: string;
 }
 
 export const ChatDetails = ({ chatId }: myPageProps) => {
@@ -23,19 +22,28 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
 
     const [chat, setChat] = useState<Chat>();
     const [members, setmembers] = useState<User[]>();
-    const { data: chats, isLoading } = useSWR<Chat>(
-        `/api/chats/${chatId}`,
-        fetcher
-    );
+    const [isLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (currentUser && chatId) {
-            setChat(chats as Chat);
+    async function getChatDetails() {
+        try {
+            const response = await fetch(`/api/chats/${chatId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            setChat(data);
             setmembers(
-                chats?.members?.filter((member) => member.id !== currentUser.id)
+                data?.members?.filter(
+                    (member: User) => member.id !== currentUser?.id
+                )
             );
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
         }
-    }, [chatId, chats, currentUser]);
+    }
 
     async function sendText() {
         try {
@@ -67,6 +75,36 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
             console.log(error);
         }
     }
+    useEffect(() => {
+        if (currentUser && chatId) getChatDetails();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatId, currentUser]);
+
+    useEffect(() => {
+        pusherClient.subscribe(chatId as string);
+
+        const handleMessage = async (newMessage: Message) => {
+            setChat((prevChat: any) => {
+                return {
+                    ...prevChat,
+                    messages: [...prevChat?.messages!, newMessage],
+                };
+            });
+        };
+        pusherClient.bind("new-message", handleMessage);
+
+        return () => {
+            pusherClient.unsubscribe(chatId as string);
+            pusherClient.unbind("new-message", handleMessage);
+        };
+    }, [chatId]);
+
+    const bottomRef = useRef(null);
+
+    useEffect(() => {
+        // @ts-ignore
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [chat?.messages]);
 
     return isLoading ? (
         <Spinner />
@@ -77,6 +115,7 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
                     <>
                         <Link href={`${chatId}/group-details`}>
                             <Image
+                                priority
                                 className={"rounded-3xl"}
                                 src={chat.groupPhoto || "/defaultgroup.jpg"}
                                 alt={"Group Photo"}
@@ -97,6 +136,7 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
                 ) : (
                     <>
                         <Image
+                            priority
                             className={"rounded-full"}
                             src={
                                 (members?.[0].image as string) ||
@@ -123,6 +163,7 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
                         currentUser={currentUser}
                     />
                 ))}
+                <div ref={bottomRef}></div>
             </div>
             <div
                 id='chat input'
