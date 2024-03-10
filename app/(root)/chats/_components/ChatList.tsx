@@ -8,7 +8,11 @@ import useSWR from "swr";
 import ChatCard from "./ChatCard";
 import { Chat } from "@/types/allTypes";
 
-const ChatListPage = () => {
+interface PageProps {
+    chatId?: string | string[];
+}
+
+const ChatListPage = ({ chatId }: PageProps) => {
     const { data: session } = useSession();
     const currentUser = session?.user;
 
@@ -40,9 +44,16 @@ const ChatListPage = () => {
                 chats?.map((chat, index) => (
                     <div
                         key={index}
-                        className='p-2 hover:bg-opacity-15 hover:bg-slate-500 hover:rounded-md'
+                        className={`p-2 hover:bg-opacity-15 hover:bg-slate-500 hover:rounded-md ${
+                            chat.id === chatId
+                                ? "bg-opacity-15 bg-slate-500 rounded-md"
+                                : ""
+                        }`}
                     >
-                        <ChatCard chat={chat} currentUser={currentUser} />
+                        <ChatCard
+                            chat={chat}
+                            currentUser={currentUser}
+                        />
                     </div>
                 ))
             )}

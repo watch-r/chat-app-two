@@ -22,15 +22,16 @@ const ChatCard = ({ chat, currentUser }: PageProps) => {
         lastMessage = chat?.messages?.[len];
     }
 
-    const seen = lastMessage?.seenBy.find(
+    const seen = lastMessage?.seenBy?.find(
         (member) => member.id === currentUser?.id
     );
+    console.log(seen);
+    const handleclick = () => {
+        router.push(`/chats/${chat.id}`);
+    };
     return (
         <>
-            <div
-                className='flex justify-between '
-                onClick={() => router.push(`/chats/${chat.id}`)}
-            >
+            <div className={`flex justify-between `} onClick={handleclick}>
                 <div className='flex space-x-5'>
                     {chat.isGroup ? (
                         <Image
@@ -90,7 +91,11 @@ const ChatCard = ({ chat, currentUser }: PageProps) => {
                                     seen ? "text-sm" : "text-sm font-semibold"
                                 }`}
                             >
-                                {lastMessage?.text}
+                                {lastMessage?.senderId === currentUser?.id ? (
+                                    <>You: {lastMessage?.text}</>
+                                ) : (
+                                    <>{lastMessage?.text}</>
+                                )}
                             </p>
                         )}
                     </div>

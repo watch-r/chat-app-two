@@ -27,7 +27,7 @@ export async function GET(
                     },
                 ],
             },
-            include: { members: true, messages: true },
+            include: { members: true, messages: {include:{seenBy:true}} },
         });
         return NextResponse.json(searchedChat, { status: 200 });
     } catch (error) {

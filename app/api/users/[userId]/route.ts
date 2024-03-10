@@ -17,7 +17,7 @@ export async function GET(
             orderBy: {
                 lastMessageAt: "desc", // Sort by createdAt field in descending order (latest first)
             },
-            include: { members: true, messages: true },
+            include: { members: true, messages: { include: { seenBy: true } } },
         });
 
         return NextResponse.json(userChats, { status: 200 });

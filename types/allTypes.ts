@@ -28,8 +28,10 @@ export type Chat = {
 export type Message = {
     id: String;
     chatId: String;
-    senderId: String;
+    senderId: string;
+    sender?: User;
     text: String;
     photo: String;
     seenBy: User[];
+    createdAt: Date;
 };

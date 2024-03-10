@@ -5,7 +5,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import AddFriend from "../chats/_components/AddFriend";
+// import AddFriend from "../chats/_components/AddFriend";
 
 const TestingComponents = () => {
     return (
@@ -15,7 +15,7 @@ const TestingComponents = () => {
                     open
                 </PopoverTrigger>
                 <PopoverContent>
-                    <AddFriend />
+                    {/* <AddFriend /> */}
                 </PopoverContent>
             </Popover>
         </>
