@@ -25,7 +25,7 @@ const NavBar = () => {
                 <div className='flex space-x-2 items-center'>
                     <NavLinks />
                     <ToggleTheme />
-                    <AuthStatus />
+                    {/* <AuthStatus /> */}
                 </div>
             </div>
         </nav>
