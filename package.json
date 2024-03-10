@@ -33,6 +33,8 @@
     "next-cloudinary": "^5.20.0",
     "next-themes": "^0.2.1",
     "prisma": "^5.10.1",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0-rc2",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.50.1",
