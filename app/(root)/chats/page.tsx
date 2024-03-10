@@ -12,10 +12,10 @@ const ChatsPage = () => {
     return (
         <div className='flex flex-row'>
             <div className='w-1/3 max-lg:w-1/2 max-md:w-full'>
-                {/* <ChatList /> */}ChatListshould be shown here
+                {/* <ChatList /> */} <p>ChatListshould be shown here</p>
             </div>
             <div className='w-2/3 max-lg:w-1/2 max-md:hidden'>
-                {/* <Contacts />  */} Contacts should be shown here
+                {/* <Contacts />  */} <p>Contacts should be shown here</p>
             </div>
         </div>
     );

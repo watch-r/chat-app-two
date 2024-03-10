@@ -24,7 +24,7 @@ export default function Layout({ children }: PropsWithChildren) {
                     fontSans.variable
                 )}
             >
-                <NavBar />
+                {/* <NavBar /> */} Nav Bar Here
                 {children}
             </main>
         </AuthProvider>
