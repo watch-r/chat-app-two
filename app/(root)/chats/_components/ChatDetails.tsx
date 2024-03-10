@@ -31,6 +31,7 @@ export const ChatDetails = ({ chatId }: myPageProps) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                cache: "no-store",
             });
             const data = await response.json();
             setChat(data);

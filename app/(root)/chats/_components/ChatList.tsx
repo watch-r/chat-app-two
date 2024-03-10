@@ -18,18 +18,32 @@ const ChatListPage = ({ chatId }: PageProps) => {
 
     const [search, setSearch] = useState("");
     const [chats, setChats] = useState<Chat[]>();
-    const { data: userChats, isLoading } = useSWR<Chat[]>(
-        search !== ""
-            ? `/api/users/${currentUser?.id}/searchChat/${search}`
-            : `/api/users/${currentUser?.id}`,
-        fetcher
-    );
+    const [isLoading, setLoading] = useState(true);
+
+    // const { data: userChats, isLoading } = useSWR<Chat[]>(fetcher);
+
+    const getChats = async () => {
+        try {
+            const response = await fetch(
+                search !== ""
+                    ? `/api/users/${currentUser?.id}/searchChat/${search}`
+                    : `/api/users/${currentUser?.id}`,
+                { cache: "no-store" }
+            );
+            const data = await response.json();
+            setChats(data);
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         if (currentUser) {
-            setChats(userChats);
+            getChats();
         }
-    }, [currentUser, userChats]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentUser, search]);
     return (
         <div className='px-2'>
             <Input
