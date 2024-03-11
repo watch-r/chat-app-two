@@ -5,19 +5,22 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import ChatListPageTest from "./_components/ChatListPageTest";
 // import AddFriend from "../chats/_components/AddFriend";
 
 const TestingComponents = () => {
     return (
         <>
-            <Popover>
-                <PopoverTrigger className='h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md'>
-                    open
-                </PopoverTrigger>
-                <PopoverContent>
-                    {/* <AddFriend /> */}
-                </PopoverContent>
-            </Popover>
+            return (
+        <div className='flex flex-row'>
+            <div className='w-1/3 max-lg:w-1/2 max-md:w-full'>
+                <ChatListPageTest /> 
+            </div>
+            <div className='w-2/3 max-lg:w-1/2 max-md:hidden'>
+                {/* <Contacts />   */} Contacts
+            </div>
+        </div>
+    );
         </>
     );
 };

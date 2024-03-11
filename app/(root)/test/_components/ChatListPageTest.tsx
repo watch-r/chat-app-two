@@ -1,6 +1,6 @@
 import React from "react";
 interface pageProps {
-    testId: string;
+    testId?: string;
 }
 const ChatListPageTest = ({ testId }: pageProps) => {
     return <div>ChatListPageTest</div>;
