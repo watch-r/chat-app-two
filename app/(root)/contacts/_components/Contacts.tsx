@@ -31,7 +31,6 @@ const Contacts = () => {
 
     const {
         data: usersAll,
-        error,
         isLoading,
     } = useSWR<Contact[]>(
         search !== "" ? `/api/users/search/${search}` : "/api/users",
@@ -42,7 +41,7 @@ const Contacts = () => {
         if (usersAll && currentUser) {
             setContacts(
                 usersAll.filter(
-                    (user: Contact) => user.email !== currentUser!.email
+                    (user: Contact) => user.id !== currentUser?.id
                 )
             );
         }
@@ -60,7 +59,7 @@ const Contacts = () => {
     const isGroup = selectedContacts.length > 1;
 
     const createChat = async () => {
-        const response = await fetch("http://localhost:3000/api/chats", {
+        const response = await fetch(`/api/chats`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +71,6 @@ const Contacts = () => {
                 gname: groupName,
                 groupPhoto: "",
             }),
-            cache: "no-store",
         });
         const chat = await response.json();
 

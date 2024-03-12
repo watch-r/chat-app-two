@@ -34,7 +34,10 @@ const TestIdPage = async ({ params }: pageProps) => {
     return (
         <div className='flex'>
             <div className='w-1/3 max-lg:hidden p-1'>
-                <ChatListPageTest testId={params.testId} />
+                <ChatListPageTest
+                    testId={params.testId}
+                    currentUser={currentUser}
+                />
             </div>
             <div className='w-2/3 max-lg:w-full p-1'>
                 <ChatDetailsPageTest testId={params.testId} />
