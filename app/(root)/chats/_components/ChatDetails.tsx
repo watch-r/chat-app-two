@@ -1,3 +1,4 @@
+"use client";
 import Spinner from "@/components/Spinner";
 import { Input } from "@/components/ui/input";
 import { pusherClient } from "@/lib/pusher";

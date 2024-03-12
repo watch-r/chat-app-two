@@ -1,4 +1,3 @@
-// import { Chat, User } from "./ChatList";
 import { cn } from "@/lib/utils";
 import { Chat, currentUser } from "@/types/allTypes";
 import { format } from "date-fns";

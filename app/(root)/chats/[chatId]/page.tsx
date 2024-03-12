@@ -1,44 +1,42 @@
-"use client";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { ChatDetails } from "../_components/ChatDetails";
 import ChatListPage from "../_components/ChatList";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/authOptions";
+import { checkEnvironment } from "@/lib/environment";
 
-const ChatDetailsPage = () => {
-    const { chatId } = useParams();
-    const { data: session } = useSession();
-    const currentUser = session?.user;
+interface pageProps {
+    params: { chatId: string };
+}
+const ChatDetailsPage = async ({ params }: pageProps) => {
+    const session = await getServerSession(authOptions);
+    if (!session) return notFound();
 
-    const seenMessages = async () => {
+    const currentUser = session.user;
+    
+    if (currentUser && params.chatId) {
         try {
-            await fetch(`/api/chats/${chatId}`, {
+            // This will throw() an error if the URL is not valid
+            await fetch(`${checkEnvironment()}/api/chats/${params.chatId}`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify({
                     currentUserId: currentUser?.id,
                 }),
             });
         } catch (error) {
-            console.log(error);
+            console.log(`Found Error: ${error}`);
         }
-    };
-
-    useEffect(() => {
-        if (currentUser && chatId) {
-            seenMessages();
-        }
-    });
+    }
 
     return (
         <div className='flex'>
             <div className='w-1/3 max-lg:hidden p-1'>
-                <ChatListPage chatId={chatId} />
+                <ChatListPage chatId={params.chatId} />
             </div>
             <div className='w-2/3 max-lg:w-full p-1'>
-                <ChatDetails chatId={chatId as string} />
+                <ChatDetails chatId={params.chatId as string} />
             </div>
         </div>
     );

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import ContactsSkeleton from "./ContactsSkeleton";
+import { currentUser } from "@/types/allTypes";
 
 type Contact = {
     id: string;
@@ -18,10 +19,11 @@ type Contact = {
     email?: string;
     image?: string;
 };
+interface pageProps {
+    currentUser: currentUser;
+}
 
-const Contacts = () => {
-    const { data: session } = useSession();
-    const currentUser = session?.user;
+const Contacts = ({ currentUser }: pageProps) => {
     const router = useRouter();
 
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -29,10 +31,7 @@ const Contacts = () => {
 
     const [selectedContacts, setSelectedContacts] = useState<Contact[]>([]);
 
-    const {
-        data: usersAll,
-        isLoading,
-    } = useSWR<Contact[]>(
+    const { data: usersAll, isLoading } = useSWR<Contact[]>(
         search !== "" ? `/api/users/search/${search}` : "/api/users",
         fetcher
     );
@@ -40,9 +39,7 @@ const Contacts = () => {
     useEffect(() => {
         if (usersAll && currentUser) {
             setContacts(
-                usersAll.filter(
-                    (user: Contact) => user.id !== currentUser?.id
-                )
+                usersAll.filter((user: Contact) => user.id !== currentUser?.id)
             );
         }
     }, [currentUser, usersAll]);
