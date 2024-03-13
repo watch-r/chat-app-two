@@ -10,6 +10,7 @@ import { checkEnvironment } from "@/lib/environment";
 interface pageProps {
     params: { chatId: string };
 }
+
 const ChatDetailsPage = async ({ params }: pageProps) => {
     const session = await getServerSession(authOptions);
     if (!session) return notFound();

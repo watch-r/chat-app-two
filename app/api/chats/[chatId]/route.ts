@@ -31,18 +31,21 @@ export async function POST(
 
         const messages = await prisma.message.findMany({
             where: { chatId: params.chatId },
+            include: { sender: true, seenBy: true },
         });
-
         // Update each message
         for (const message of messages) {
-            await prisma.message.update({
-                where: { id: message.id },
-                data: {
-                    seenBy: {
-                        connect: { id: currentUserId },
+            if (message.seenBy.includes(currentUserId)) continue;
+            else {
+                await prisma.message.update({
+                    where: { id: message.id },
+                    data: {
+                        seenBy: {
+                            connect: { id: currentUserId },
+                        },
                     },
-                },
-            });
+                });
+            }
         }
 
         return NextResponse.json(
