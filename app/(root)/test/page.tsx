@@ -1,23 +1,21 @@
-import ProfileForm from "@/components/ProfileForm";
-import { Button } from "@/components/ui/button";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+import { getServerSession } from "next-auth";
+import ChatListPageTest from "./_components/ChatListPageTest";
+import { authOptions } from "@/lib/auth/authOptions";
 // import AddFriend from "../chats/_components/AddFriend";
 
-const TestingComponents = () => {
+const TestingComponents = async () => {
+    const session = await getServerSession(authOptions);
+    const currentUser = session?.user;
     return (
         <>
-            <Popover>
-                <PopoverTrigger className='h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md'>
-                    open
-                </PopoverTrigger>
-                <PopoverContent>
-                    {/* <AddFriend /> */}
-                </PopoverContent>
-            </Popover>
+            <div className='flex flex-row'>
+                <div className='w-1/3 max-lg:w-1/2 max-md:w-full'>
+                    <ChatListPageTest currentUser={currentUser} />
+                </div>
+                <div className='w-2/3 max-lg:w-1/2 max-md:hidden'>
+                    {/* <Contacts />   */} Contacts
+                </div>
+            </div>
         </>
     );
 };

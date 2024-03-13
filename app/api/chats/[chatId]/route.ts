@@ -29,33 +29,23 @@ export async function POST(
         const body = await request.json();
         const { currentUserId } = body;
 
-        // If the user hasn't seen the message, connect the user to the message
-        // await prisma.chat.update({
-        //     where: { id: params.chatId },
-        //     data: {
-        //         messages: {
-        //             connect: {
-        //                 seenBy: {
-        //                     connect: { id: currentUserId },
-        //                 },
-        //             },
-        //         },
-        //     },
-        // });
         const messages = await prisma.message.findMany({
             where: { chatId: params.chatId },
+            include: { sender: true, seenBy: true },
         });
-
         // Update each message
         for (const message of messages) {
-            await prisma.message.update({
-                where: { id: message.id },
-                data: {
-                    seenBy: {
-                        connect: { id: currentUserId },
+            if (message.seenBy.includes(currentUserId)) continue;
+            else {
+                await prisma.message.update({
+                    where: { id: message.id },
+                    data: {
+                        seenBy: {
+                            connect: { id: currentUserId },
+                        },
                     },
-                },
-            });
+                });
+            }
         }
 
         return NextResponse.json(

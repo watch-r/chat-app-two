@@ -8,6 +8,7 @@ interface pageProps {
 }
 
 const MessageCard = ({ message, currentUser }: pageProps) => {
+    const heightWeight = 200; //height and weight of the photo
     return message.senderId !== currentUser?.id ? (
         <div className='flex items-start gap-2'>
             <Image
@@ -33,8 +34,8 @@ const MessageCard = ({ message, currentUser }: pageProps) => {
                     <Image
                         src={message.photo as string}
                         alt={`Photo sent By ${message?.sender?.name}`}
-                        width='180'
-                        height='180'
+                        width={heightWeight}
+                        height={heightWeight}
                     />
                 )}
             </div>
@@ -53,8 +54,8 @@ const MessageCard = ({ message, currentUser }: pageProps) => {
                     <Image
                         src={message.photo as string}
                         alt={"Photo sent by You"}
-                        width={180}
-                        height={180}
+                        width={heightWeight}
+                        height={heightWeight}
                     />
                 )}
             </div>

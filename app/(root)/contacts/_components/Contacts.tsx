@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import ContactsSkeleton from "./ContactsSkeleton";
+import { currentUser } from "@/types/allTypes";
 
 type Contact = {
     id: string;
@@ -18,10 +19,11 @@ type Contact = {
     email?: string;
     image?: string;
 };
+interface pageProps {
+    currentUser: currentUser;
+}
 
-const Contacts = () => {
-    const { data: session } = useSession();
-    const currentUser = session?.user;
+const Contacts = ({ currentUser }: pageProps) => {
     const router = useRouter();
 
     const [contacts, setContacts] = useState<Contact[]>([]);
@@ -29,11 +31,7 @@ const Contacts = () => {
 
     const [selectedContacts, setSelectedContacts] = useState<Contact[]>([]);
 
-    const {
-        data: usersAll,
-        error,
-        isLoading,
-    } = useSWR<Contact[]>(
+    const { data: usersAll, isLoading } = useSWR<Contact[]>(
         search !== "" ? `/api/users/search/${search}` : "/api/users",
         fetcher
     );
@@ -41,9 +39,7 @@ const Contacts = () => {
     useEffect(() => {
         if (usersAll && currentUser) {
             setContacts(
-                usersAll.filter(
-                    (user: Contact) => user.email !== currentUser!.email
-                )
+                usersAll.filter((user: Contact) => user.id !== currentUser?.id)
             );
         }
     }, [currentUser, usersAll]);
@@ -60,7 +56,7 @@ const Contacts = () => {
     const isGroup = selectedContacts.length > 1;
 
     const createChat = async () => {
-        const response = await fetch("http://localhost:3000/api/chats", {
+        const response = await fetch(`/api/chats`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +68,6 @@ const Contacts = () => {
                 gname: groupName,
                 groupPhoto: "",
             }),
-            cache: "no-store",
         });
         const chat = await response.json();
 
