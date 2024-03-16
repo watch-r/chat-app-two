@@ -107,7 +107,7 @@ const RegisterForm = () => {
                 toast({
                     variant: "destructive",
                     title: "Unsuccessful!",
-                    description: "An Unexpected Error Occured!",
+                    description: "User Already Exists / An Unexpected Error Occured!",
                 });
             }
         } catch (error) {

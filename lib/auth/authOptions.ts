@@ -1,12 +1,15 @@
 import { prisma } from "@/prisma/client";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
+import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { database } from "../db";
+import { fetchRedis } from "@/helpers/redis";
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    adapter: UpstashRedisAdapter(database),
     providers: [
         CredentialsProvider({
             // The name to display on the sign in form (e.g. "Sign in with...")
@@ -26,14 +29,19 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials, req) {
                 // Add logic here to look up the user from the credentials supplied
                 if (!credentials?.email || !credentials.password) return null;
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                });
-
+                const userId = await fetchRedis(
+                    "get",
+                    `user:email:${credentials.email}`
+                );
+                const user = await fetchRedis("get", `user:${userId}`);
+                // console.log(user);
                 if (!user) return null;
+                const parsedUser = JSON.parse(user)
+
+                // console.log(parsedUser.password);
                 const validPass = await bcrypt.compare(
                     credentials.password,
-                    user.hashedPassword!
+                    parsedUser.password!
                 );
 
                 return validPass ? user : null;
@@ -45,19 +53,37 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        jwt: async ({ token }) => {
-            const user = await prisma.user.findUnique({
-                where: { email: token.email || undefined },
-            });
-            if (user?.id) {
-                token.id = user.id;
+        jwt: async ({ token, user }) => {
+            const dbUserResult = (await fetchRedis(
+                "get",
+                `user:${token.sub}`
+            )) as string | null;
+
+            if (!dbUserResult) {
+                if (user) {
+                    token.id = user!.id;
+                }
+
+                return token;
             }
-            return token;
+
+            const dbUser = JSON.parse(dbUserResult) as User;
+
+            return {
+                id: dbUser.id,
+                name: dbUser.name,
+                email: dbUser.email,
+                picture: dbUser.image,
+            };
         },
         session: async ({ session, token }) => {
-            if (token?.id) {
-                session.user.id = token?.id as string;
+            if (token) {
+                session.user.id = token.sub as string;
+                session.user.name = token.name;
+                session.user.email = token.email;
+                session.user.image = token.picture;
             }
+
             return session;
         },
     },
