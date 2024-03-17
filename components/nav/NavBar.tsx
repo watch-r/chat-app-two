@@ -9,7 +9,7 @@ const NavBar = () => {
         <nav className='border-b-2 px-4 mb-5 py-3'>
             <div className='flex flex-row items-center justify-between'>
                 <Link
-                    href={"/chats"}
+                    href={"/dashboard"}
                     className='flex flex-row space-x-1 items-center'
                 >
                     <Image

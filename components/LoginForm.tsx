@@ -54,9 +54,9 @@ const LoginForm = () => {
                     description: "Congratulations! Sign In was Successful.",
                 });
                 router.refresh();
-                setTimeout(() => {
-                    router.push("/chats");
-                }, 1500);
+                // setTimeout(() => {
+                //     router.push("/dashboard");
+                // }, 1500);
             } else {
                 setSubmitting(false);
                 toast({

@@ -1,4 +1,10 @@
 "use client";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,7 +16,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import AddFriendsButton from "./AddFriendsButton";
 import ContactsSkeleton from "./ContactsSkeleton";
+import Requests from "./Requests";
 
 type Contact = {
     id: string;
@@ -89,46 +97,69 @@ const Contacts = () => {
                 onChange={(event) => setSearch(event.target.value)}
             />
             <div className='flex flex-row space-x-2'>
-                <div className='w-1/2 max-lg:hidden'>
+                <div className='w-1/2 max-lg:w-full'>
                     {isLoading ? (
                         <ContactsSkeleton />
                     ) : (
-                        <div className='space-y-2'>
-                            <p className='font-semibold text-lg px-3 mt-2'>
-                                Select or Deselect to start...
-                            </p>
-                            {contacts.map((user: Contact, index: number) => (
-                                <div
-                                    className='flex items-center space-x-2 space-y-1 p-3 border-2 border-purple-100 dark:border-purple-950 rounded-lg'
-                                    key={index}
-                                >
-                                    <Checkbox
-                                        onClick={() => handleSelect(user)}
-                                        value={user.id}
-                                        id={user.id}
-                                        className='w-5 h-5'
-                                    />
-                                    <Image
-                                        className='rounded-full'
-                                        src={
-                                            user!.image || "/defaultperson.png"
-                                        }
-                                        width={35}
-                                        height={40}
-                                        alt={"Profile Photo"}
-                                    />
-                                    <Label
-                                        htmlFor={user.id}
-                                        className='text-lg'
-                                    >
-                                        {user.name}
-                                    </Label>
-                                </div>
-                            ))}
-                        </div>
+                        <>
+                            <div className='space-y-2'>
+                                <Accordion type='single' collapsible>
+                                    <AccordionItem value='item-1'>
+                                        <Button
+                                            className='w-full mb-1'
+                                            variant={"secondary"}
+                                        >
+                                            <AccordionTrigger>
+                                                Add a Friend ?
+                                            </AccordionTrigger>
+                                        </Button>
+                                        <AccordionContent>
+                                            <AddFriendsButton />
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+
+                                <p className='font-semibold text-lg px-3 mt-2'>
+                                    Select or Deselect to start...
+                                </p>
+                                {contacts.map(
+                                    (user: Contact, index: number) => (
+                                        <div
+                                            className='flex items-center space-x-2 space-y-1 p-3 border-2 border-purple-100 dark:border-purple-950 rounded-lg'
+                                            key={index}
+                                        >
+                                            <Checkbox
+                                                onClick={() =>
+                                                    handleSelect(user)
+                                                }
+                                                value={user.id}
+                                                id={user.id}
+                                                className='w-5 h-5'
+                                            />
+                                            <Image
+                                                className='rounded-full'
+                                                src={
+                                                    user!.image ||
+                                                    "/defaultperson.png"
+                                                }
+                                                width={35}
+                                                height={40}
+                                                alt={"Profile Photo"}
+                                            />
+                                            <Label
+                                                htmlFor={user.id}
+                                                className='text-lg'
+                                            >
+                                                {user.name}
+                                            </Label>
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        </>
                     )}
                 </div>
-                <div className='pl-2 w-1/2 max-lg:w-full flex flex-col gap-7'>
+                <div className='pl-2 w-1/2 max-lg:flex flex-col gap-7'>
                     {isGroup && (
                         <>
                             <div className='flex flex-col gap-3'>

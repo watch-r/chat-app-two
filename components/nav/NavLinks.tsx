@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const NavLinks = () => {
     const currentPath = usePathname();
     const links = [
-        { label: "Chats", href: "/chats" },
-        { label: "Contacts", href: "/contacts" },
+        { label: "Chats", href: "/dashboard/chats" },
+        { label: "Contacts", href: "/dashboard/contacts" },
     ];
     return (
         <ul className='flex space-x-2'>
