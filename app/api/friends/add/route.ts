@@ -8,8 +8,8 @@ import { z } from "zod";
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
-    // if (!session)
-    //     NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    if (!session)
+        NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     try {
         const body = await request.json();
@@ -19,12 +19,12 @@ export async function POST(request: NextRequest) {
             "get",
             `user:email:${emailToAdd}`
         )) as string;
+
         if (!toAddFriendId)
             NextResponse.json(
                 { message: "User Does not Exists" },
                 { status: 400 }
             );
-        // console.log("CameHere");
         if (toAddFriendId === session?.user.id)
             NextResponse.json(
                 { message: "You Can Not add yourself as Friend" },
@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
                 { message: "Already Friends with this User" },
                 { status: 400 }
             );
+        // console.log(toAddFriendId);
 
         await database.sadd(
             `user:${toAddFriendId}:incoming_friend_requests`,

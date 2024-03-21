@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import AddFriendsButton from "./AddFriendsButton";
+import AddFriendsButton from "../../_components/AddFriendsButton";
 import ContactsSkeleton from "./ContactsSkeleton";
 import Requests from "./Requests";
 

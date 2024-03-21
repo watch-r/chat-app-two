@@ -1,3 +1,4 @@
+
 export type currentUser =
     | {
           id?: string | null | undefined;
@@ -35,3 +36,5 @@ export type Message = {
     seenBy: User[];
     createdAt: Date;
 };
+
+

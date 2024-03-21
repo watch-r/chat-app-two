@@ -1,12 +1,10 @@
-import { prisma } from "@/prisma/client";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import bcrypt from "bcrypt";
+import { fetchRedis } from "@/helpers/redis";
 import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
+import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { database } from "../db";
-import { fetchRedis } from "@/helpers/redis";
 
 export const authOptions: NextAuthOptions = {
     adapter: UpstashRedisAdapter(database),
@@ -34,9 +32,9 @@ export const authOptions: NextAuthOptions = {
                     `user:email:${credentials.email}`
                 );
                 const user = await fetchRedis("get", `user:${userId}`);
-                // console.log(user);
+                // console.log(user)
                 if (!user) return null;
-                const parsedUser = JSON.parse(user)
+                const parsedUser = JSON.parse(user);
 
                 // console.log(parsedUser.password);
                 const validPass = await bcrypt.compare(
@@ -44,7 +42,7 @@ export const authOptions: NextAuthOptions = {
                     parsedUser.password!
                 );
 
-                return validPass ? user : null;
+                return validPass ? parsedUser : null;
             },
         }),
         GoogleProvider({
@@ -56,7 +54,7 @@ export const authOptions: NextAuthOptions = {
         jwt: async ({ token, user }) => {
             const dbUserResult = (await fetchRedis(
                 "get",
-                `user:${token.sub}`
+                `user:${token.id}`
             )) as string | null;
 
             if (!dbUserResult) {
@@ -78,11 +76,12 @@ export const authOptions: NextAuthOptions = {
         },
         session: async ({ session, token }) => {
             if (token) {
-                session.user.id = token.id as string;
+                session.user.id = token.id;
                 session.user.name = token.name;
                 session.user.email = token.email;
                 session.user.image = token.picture;
             }
+            // console.log(token);
 
             return session;
         },

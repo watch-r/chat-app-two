@@ -52,7 +52,7 @@ const AddFriendsButton = () => {
         <form onSubmit={handleSubmit(onSubmit)} className='py-1'>
             <label
                 htmlFor='email'
-                className='block text-sm font-medium ml-3 pt-2'
+                className='block text-lg font-medium pt-5'
             >
                 Add friend by E-Mail
             </label>
