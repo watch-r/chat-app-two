@@ -103,21 +103,6 @@ const Contacts = () => {
                     ) : (
                         <>
                             <div className='space-y-2'>
-                                <Accordion type='single' collapsible>
-                                    <AccordionItem value='item-1'>
-                                        <Button
-                                            className='w-full mb-1'
-                                            variant={"secondary"}
-                                        >
-                                            <AccordionTrigger>
-                                                Add a Friend ?
-                                            </AccordionTrigger>
-                                        </Button>
-                                        <AccordionContent>
-                                            <AddFriendsButton />
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
 
                                 <p className='font-semibold text-lg px-3 mt-2'>
                                     Select or Deselect to start...

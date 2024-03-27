@@ -1,65 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/authOptions";
+import { notFound } from "next/navigation";
 
 export const POST = async (request: NextRequest) => {
+    const session = getServerSession(authOptions);
+    if (!session) notFound();
     try {
         const body = await request.json();
-        const { currentUser, members, isGroup, gname, groupPhoto } = body;
-        const currentUserId = await prisma.user.findUnique({
-            where: { email: currentUser },
-        });
-        // console.log("So far good" + currentUserId?.id);
-
-        const query = isGroup
-            ? {
-                  isGroup,
-                  gname,
-                  groupPhoto,
-                  members: {
-                      some: {
-                          id: {
-                              in: [currentUserId?.id, ...members],
-                          },
-                      },
-                  },
-              }
-            : {
-                  members: {
-                      every: {
-                          id: {
-                              in: [currentUserId?.id, ...members],
-                          },
-                      },
-                  },
-              };
-
-        let chat = await prisma.chat.findFirst({
-            where: query,
-        });
-
-        if (!chat) {
-            chat = await prisma.chat.create({
-                data: isGroup
-                    ? {
-                          isGroup,
-                          groupPhoto,
-                          gname,
-                          members: {
-                              connect: [currentUserId?.id, ...members].map(
-                                  (id) => ({ id })
-                              ),
-                          },
-                      }
-                    : {
-                          members: {
-                              connect: [currentUserId?.id, ...members].map(
-                                  (id) => ({ id })
-                              ),
-                          },
-                      },
-            });
-        }
-        return NextResponse.json(chat, {
+        const { members, isGroup, gname, groupPhoto } = body;
+        
+        return NextResponse.json("Ok", {
             status: 201,
         });
     } catch (error) {
