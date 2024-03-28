@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 
 export const POST = async (request: NextRequest) => {
     const session = getServerSession(authOptions);
-    if (!session) notFound();
+    if (!session) notFound(); 
     try {
         const body = await request.json();
         const { members, isGroup, gname, groupPhoto } = body;
